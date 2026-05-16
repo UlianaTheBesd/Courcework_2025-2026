@@ -1,4 +1,4 @@
-/* Очищенный файл main.cc */
+/* Очищенный файл main.cc + вторая версия */
 
 /*This is a skeleton code file for use with the Finite Element Method for Problems in Physics.
 It uses the deal.II FEM library, dealii.org*/
