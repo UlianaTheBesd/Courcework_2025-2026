@@ -422,7 +422,7 @@ void FEM<dim>::assemble_system(){
     //Add nonzero Neumann condition, if applicable
     //EDIT - использованы переменные h_val и L из класса.
     if(prob == 2){ 
-      // Проверка на близость к правой границе L (используем допуск 1e-9 для точности)
+      // Проверка на близость к правой границе L - "является ли текущий локальный узел правым краем всей балки?". Если да, то к этой точке добавляем к вектору нагрузку справа.
       if(std::abs(nodeLocation[local_dof_indices[dofs_per_elem-1]] - L) < 1e-9){
         //EDIT - Modify Flocal to include the traction on the right boundary.
         Flocal(dofs_per_elem-1) += h_val * A;
@@ -454,7 +454,7 @@ void FEM<dim>::assemble_system(){
 
   }
 
-  //Apply Dirichlet boundary conditions
+  //Apply Dirichlet boundary conditions (условие Дирихле).
   /*deal.II applies Dirichlet boundary conditions (using the boundary_values map we
     defined in the function "define_boundary_conds") without resizing K or F*/
   MatrixTools::apply_boundary_values (boundary_values, K, D, F, false);
@@ -489,7 +489,7 @@ void FEM<dim>::output_results (){
 }
 
 template <int dim>
-double FEM<dim>::l2norm_of_error(){
+double FEM<dim>::l2norm_of_error(){ // просто рассчёт ошибки: инт.(u-uh)2dx.
         
   double l2norm = 0.;
 
