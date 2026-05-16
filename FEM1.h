@@ -1,4 +1,4 @@
-/* Очищенный файл FEM1.h */
+/* Очищенный файл FEM1.h + версия FEM_2 со второй ветки */
 
 /*This is a template file for use with 1D finite elements.
   The portions of the code you need to fill in are marked with the comment "//EDIT".
