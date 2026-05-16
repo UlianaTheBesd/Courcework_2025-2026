@@ -315,7 +315,7 @@ void FEM<dim>::setup_system(){
   MappingQ1<dim,dim> mapping;
   std::vector< Point<dim,double> > dof_coords(dof_handler.n_dofs());
   nodeLocation.resize(dof_handler.n_dofs());
-  DoFTools::map_dofs_to_support_points<dim,dim>(mapping,dof_handler,dof_coords);
+  DoFTools::map_dofs_to_support_points<dim,dim>(mapping,dof_handler,dof_coords); // функция deal.ii - находит физическую координату для каждого глоб. узла i и записывает её в nodeLocation.
   for(unsigned int i=0; i<dof_coords.size(); i++){
     nodeLocation[i] = dof_coords[i][0];
   }
@@ -324,7 +324,7 @@ void FEM<dim>::setup_system(){
   define_boundary_conds();
 
   //Define the size of the global matrices and vectors
-  sparsity_pattern.reinit (dof_handler.n_dofs(), dof_handler.n_dofs(),
+  sparsity_pattern.reinit (dof_handler.n_dofs(), dof_handler.n_dofs(), // для K матрицы (чтобы не хранить 0 в памяти..).
                            dof_handler.max_couplings_between_dofs());
   DoFTools::make_sparsity_pattern (dof_handler, sparsity_pattern);
   sparsity_pattern.compress();
@@ -402,7 +402,7 @@ void FEM<dim>::assemble_system(){
       of the element. Remember that the vector "nodeLocation" holds the x-coordinates, indexed
       by the global node number. "local_dof_indices" gives us the global node number indexed by
       the element node number.*/
-    h_e = nodeLocation[local_dof_indices[1]] - nodeLocation[local_dof_indices[0]];
+    h_e = nodeLocation[local_dof_indices[1]] - nodeLocation[local_dof_indices[0]]; // Координату правого узла - координата левого.
 
     //Loop over local DOFs and quadrature points to populate Flocal and Klocal.
     //EDIT: Использованы переменные класса (A, f_bar), чтобы изменения в main.cc учитывались
@@ -411,7 +411,7 @@ void FEM<dim>::assemble_system(){
       for(unsigned int q=0; q<quadRule; q++){
         x = 0;
         //Interpolate the x-coordinates at the nodes to find the x-coordinate at the quad pt.
-        for(unsigned int B=0; B<dofs_per_elem; B++){
+        for(unsigned int B=0; B<dofs_per_elem; B++){ // Взвешенная сумма в точках квадратуры.
           x += nodeLocation[local_dof_indices[B]]*basis_function(B,quad_points[q]);
         }
         f = f_bar * x;  // f = ¯f * x согласно условию задания
@@ -436,7 +436,7 @@ void FEM<dim>::assemble_system(){
       for(unsigned int B_idx=0; B_idx<dofs_per_elem; B_idx++){
         for(unsigned int q=0; q<quadRule; q++){
           //EDIT DONE - Define Klocal.
-          double dphiA_dx = basis_gradient(A_idx, quad_points[q]) * (2.0 / h_e);
+          double dphiA_dx = basis_gradient(A_idx, quad_points[q]) * (2.0 / h_e); // Переход от локальных производных к глобальным (Якобиан перехода).
           double dphiB_dx = basis_gradient(B_idx, quad_points[q]) * (2.0 / h_e);
           Klocal(A_idx,B_idx) += E * A * dphiA_dx * dphiB_dx * quad_weight[q] * (h_e / 2.0);
         }
