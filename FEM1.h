@@ -420,7 +420,7 @@ void FEM<dim>::assemble_system(){
     }
     
     //Add nonzero Neumann condition, if applicable
-    //EDIT: Использованы переменные h_val и L из класса
+    //EDIT - использованы переменные h_val и L из класса.
     if(prob == 2){ 
       // Проверка на близость к правой границе L (используем допуск 1e-9 для точности)
       if(std::abs(nodeLocation[local_dof_indices[dofs_per_elem-1]] - L) < 1e-9){
@@ -431,7 +431,7 @@ void FEM<dim>::assemble_system(){
 
     //Loop over local DOFs and quadrature points to populate Klocal
     Klocal = 0;
-    //EDIT: Использованы переменные E и A из класса
+    //EDIT - использованы переменные E и A из класса.
     for(unsigned int A_idx=0; A_idx<dofs_per_elem; A_idx++){
       for(unsigned int B_idx=0; B_idx<dofs_per_elem; B_idx++){
         for(unsigned int q=0; q<quadRule; q++){
@@ -516,7 +516,7 @@ double FEM<dim>::l2norm_of_error(){
         u_h += D[local_dof_indices[B]] * basis_function(B, quad_points[q]);
       }
     
-      //EDIT: Удалены локальные константы. Теперь используются параметры E, A, f_bar, L, h_val, g1, g2 из класса.
+      //EDIT - удалила локальные константы. Теперь параметры E, A, f_bar, L, h_val, g1, g2 из класса.
       if(prob == 1){
         u_exact = f_bar/(2.*E*A) * x * (L - x) + (g2 - g1)/L * x + g1;
       }
